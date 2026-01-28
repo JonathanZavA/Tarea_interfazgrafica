@@ -12,15 +12,20 @@ class PersonaServicio(QMainWindow):
     '''
 
     def __init__(self):
-
+        # Inicialización de la ventana principal y la interfaz
         super(PersonaServicio, self).__init__()
         self.ui = Ui_btn_guardar()
         self.ui.setupUi(self)
+
+        # Conexión de eventos de botones con sus funciones correspondientes
         self.ui.btn_guardar_.clicked.connect(self.guardar)
         self.ui.btn_limpiar.clicked.connect(self.limpiar)
+
+        # Restricción para que el campo cédula solo acepte números
         self.ui.txt_cedula.setValidator(QIntValidator())
 
     def guardar(self):
+        # Extracción de valores ingresados en los campos de la interfaz
         nombre = self.ui.txt_nombre.text()
         apellido = self.ui.txt_apellido.text()
         cedula = self.ui.txt_cedula.text()
@@ -47,9 +52,10 @@ class PersonaServicio(QMainWindow):
         else:
 
             try:
-                # Al intentar crear la Persona, si el email está mal, saltará al 'except'
+                # Intento de creación del objeto de dominio con sus validaciones internas
                 persona = Persona(cedula=cedula, nombre=nombre, apellido=apellido, email=email, sexo=sexo)
 
+                # Envío del objeto validado a la capa de datos para su inserción
                 PersonaDAO.insertar_persona(persona)
                 print(nombre)
                 print(apellido)
@@ -57,19 +63,18 @@ class PersonaServicio(QMainWindow):
                 print(cedula)
                 print(sexo)
 
-
+                # Notificación visual de éxito y limpieza del formulario
                 self.ui.statusbar.showMessage("Se guardo la persona", 1500)
                 self.limpiar()
 
             except ValueError as e:
-
                 QMessageBox.warning(self, "Advertencia", str(e))
 
             except Exception as e:
-                # Por si acaso ocurre un error de base de datos u otra cosa
+                # Notificación visual de éxito y limpieza del formulario
                 QMessageBox.critical(self, "Error Crítico", f"Ocurrió un error: {e}")
     def limpiar(self):
-
+        # Restablecimiento de todos los componentes de la interfaz a su estado inicial
         self.ui.txtNombre.setText("")
         self.ui.txtCedula.setText("")
         self.ui.txtApellido.setText("")
